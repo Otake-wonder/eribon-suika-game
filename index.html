@@ -1,41 +1,25 @@
 <!DOCTYPE html>
 <html lang="en-us">
   <head>
-<<<<<<< HEAD
-    <meta charset="utf-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Unity Web Player | My project</title>
-=======
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, maximum-scale=1">
 	<script>
-	  function checkOrientation() {
-	    if (window.innerHeight > window.innerWidth) {
-	      document.body.innerHTML = "<h2 style='text-align:center;margin-top:50%;'>横画面でプレイしてください</h2>";
-	    }
-	  }
-
-	  window.addEventListener("load", checkOrientation); // 初回読み込み時に向きをチェック
-	  window.addEventListener("orientationchange", function () {
+	  window.addEventListener("orientationchange", function() {
 	    if (window.orientation === 0 || window.orientation === 180) {
 	      document.body.innerHTML = "<h2 style='text-align:center;margin-top:50%;'>横画面でプレイしてください</h2>";
 	    } else {
 	      location.reload(); // 横画面に戻ったら再読み込み
 	    }
-	  });
-	</script>    <meta charset="utf-8">
+	  }, false);
+	</script>
+    <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>みんみんゲーム</title>
->>>>>>> 8894d7af2801466ae1e0c8250d442f65585b26e8
     <link rel="shortcut icon" href="TemplateData/favicon.ico">
     <link rel="stylesheet" href="TemplateData/style.css">
   </head>
   <body>
     <div id="unity-container" class="unity-desktop">
-<<<<<<< HEAD
-      <canvas id="unity-canvas" width=960 height=600 tabindex="-1"></canvas>
-=======
       <canvas id="unity-canvas" width=1024 height=600 tabindex="-1"></canvas>
->>>>>>> 8894d7af2801466ae1e0c8250d442f65585b26e8
       <div id="unity-loading-bar">
         <div id="unity-logo"></div>
         <div id="unity-progress-bar-empty">
@@ -46,11 +30,7 @@
       <div id="unity-footer">
         <div id="unity-logo-title-footer"></div>
         <div id="unity-fullscreen-button"></div>
-<<<<<<< HEAD
-        <div id="unity-build-title">My project</div>
-=======
         <div id="unity-build-title">みんみんゲーム</div>
->>>>>>> 8894d7af2801466ae1e0c8250d442f65585b26e8
       </div>
     </div>
     <script>
@@ -128,11 +108,7 @@
 
       } else {
         // Desktop style: Render the game canvas in a window that can be maximized to fullscreen:
-<<<<<<< HEAD
-        canvas.style.width = "960px";
-=======
         canvas.style.width = "1024px";
->>>>>>> 8894d7af2801466ae1e0c8250d442f65585b26e8
         canvas.style.height = "600px";
       }
 
