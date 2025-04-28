@@ -1,133 +1,126 @@
 <!DOCTYPE html>
 <html lang="en-us">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <title>みんみんゲーム</title>
-  <link rel="shortcut icon" href="TemplateData/favicon.ico">
-  <link rel="stylesheet" href="TemplateData/style.css">
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
-      background: #000;
-    }
-    #unity-container {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      margin: auto;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: #000;
-    }
-    canvas#unity-canvas {
-      background: #000;
-    }
-    #orientation-overlay {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: black;
-      color: white;
-      font-size: 24px;
-      text-align: center;
-      padding-top: 40%;
-      z-index: 9999;
-    }
-  </style>
-</head>
-<body>
-  <div id="unity-container">
-    <canvas id="unity-canvas" width="1024" height="600" tabindex="-1"></canvas>
-  </div>
-  <div id="unity-loading-bar">
-    <div id="unity-logo"></div>
-    <div id="unity-progress-bar-empty">
-      <div id="unity-progress-bar-full"></div>
-    </div>
-  </div>
-  <div id="unity-warning"></div>
-  <div id="unity-footer">
-    <div id="unity-logo-title-footer"></div>
-    <div id="unity-fullscreen-button"></div>
-    <div id="unity-build-title">みんみんゲーム</div>
-  </div>
-  <div id="orientation-overlay">横画面でプレイしてください</div>
-
-  <script>
-    function isMobile() {
-      return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-    }
-
-    function checkOrientation() {
-      const overlay = document.getElementById('orientation-overlay');
-      if (window.innerWidth < window.innerHeight) {
-        overlay.style.display = 'block';
-      } else {
-        overlay.style.display = 'none';
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>みんみんゲーム</title>
+    <link rel="shortcut icon" href="TemplateData/favicon.ico">
+    <link rel="stylesheet" href="TemplateData/style.css">
+    <style>
+      #orientation-overlay {
+        display: none;
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%;
+        height: 100%;
+        background: black;
+        color: white;
+        font-size: 24px;
+        text-align: center;
+        padding-top: 40%;
+        z-index: 9999;
       }
-    }
+    </style>
+  </head>
+  <body>
+    <div id="unity-container" class="unity-desktop">
+      <canvas id="unity-canvas" width=1024 height=600 tabindex="-1"></canvas>
+      <div id="unity-loading-bar">
+        <div id="unity-logo"></div>
+        <div id="unity-progress-bar-empty">
+          <div id="unity-progress-bar-full"></div>
+        </div>
+      </div>
+      <div id="unity-warning"> </div>
+      <div id="unity-footer">
+        <div id="unity-logo-title-footer"></div>
+        <div id="unity-fullscreen-button"></div>
+        <div id="unity-build-title">みんみんゲーム</div>
+      </div>
+    </div>
 
-    document.addEventListener("DOMContentLoaded", function() {
-      const container = document.getElementById('unity-container');
-      const canvas = document.getElementById('unity-canvas');
+    <!-- 🔵 追加：縦画面時の警告オーバーレイ -->
+    <div id="orientation-overlay">横画面でプレイしてください</div>
 
-      if (isMobile()) {
-        container.style.width = "100vw";
-        container.style.height = "100vh";
-        canvas.style.width = "100%";
-        canvas.style.height = "100%";
+    <script>
+      // 🔵 スマホで縦画面なら警告を出す
+      function checkOrientation() {
+        const overlay = document.getElementById('orientation-overlay');
+        if (window.innerWidth < window.innerHeight) {
+          overlay.style.display = 'block';
+        } else {
+          overlay.style.display = 'none';
+        }
+      }
+      window.addEventListener("orientationchange", checkOrientation);
+      window.addEventListener("resize", checkOrientation);
+      document.addEventListener("DOMContentLoaded", checkOrientation);
+
+      var canvas = document.querySelector("#unity-canvas");
+
+      function unityShowBanner(msg, type) {
+        var warningBanner = document.querySelector("#unity-warning");
+        function updateBannerVisibility() {
+          warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
+        }
+        var div = document.createElement('div');
+        div.innerHTML = msg;
+        warningBanner.appendChild(div);
+        if (type == 'error') div.style = 'background: red; padding: 10px;';
+        else {
+          if (type == 'warning') div.style = 'background: yellow; padding: 10px;';
+          setTimeout(function() {
+            warningBanner.removeChild(div);
+            updateBannerVisibility();
+          }, 5000);
+        }
+        updateBannerVisibility();
+      }
+
+      var buildUrl = "Build";
+      var loaderUrl = buildUrl + "/eribon-suika-game.loader.js";
+      var config = {
+        arguments: [],
+        dataUrl: buildUrl + "/eribon-suika-game.data",
+        frameworkUrl: buildUrl + "/eribon-suika-game.framework.js",
+        codeUrl: buildUrl + "/eribon-suika-game.wasm",
+        streamingAssetsUrl: "StreamingAssets",
+        companyName: "DefaultCompany",
+        productName: "みんみんゲーム",
+        productVersion: "1.0",
+        showBanner: unityShowBanner,
+      };
+
+      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+        var meta = document.createElement('meta');
+        meta.name = 'viewport';
+        meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
+        document.getElementsByTagName('head')[0].appendChild(meta);
+        document.querySelector("#unity-container").className = "unity-mobile";
+        canvas.className = "unity-mobile";
       } else {
-        container.style.width = "1024px";
-        container.style.height = "600px";
         canvas.style.width = "1024px";
         canvas.style.height = "600px";
       }
 
-      checkOrientation();
-    });
+      document.querySelector("#unity-loading-bar").style.display = "block";
 
-    window.addEventListener("resize", checkOrientation);
-    window.addEventListener("orientationchange", checkOrientation);
+      var script = document.createElement("script");
+      script.src = loaderUrl;
+      script.onload = () => {
+        createUnityInstance(canvas, config, (progress) => {
+          document.querySelector("#unity-progress-bar-full").style.width = 100 * progress + "%";
+        }).then((unityInstance) => {
+          document.querySelector("#unity-loading-bar").style.display = "none";
+          document.querySelector("#unity-fullscreen-button").onclick = () => {
+            unityInstance.SetFullscreen(1);
+          };
+        }).catch((message) => {
+          alert(message);
+        });
+      };
 
-    var buildUrl = "Build";
-    var loaderUrl = buildUrl + "/eribon-suika-game.loader.js";
-    var config = {
-      dataUrl: buildUrl + "/eribon-suika-game.data",
-      frameworkUrl: buildUrl + "/eribon-suika-game.framework.js",
-      codeUrl: buildUrl + "/eribon-suika-game.wasm",
-      streamingAssetsUrl: "StreamingAssets",
-      companyName: "DefaultCompany",
-      productName: "みんみんゲーム",
-      productVersion: "1.0",
-      showBanner: function(msg, type) {}
-    };
-
-    var canvas = document.getElementById("unity-canvas");
-    var script = document.createElement("script");
-    script.src = loaderUrl;
-    script.onload = () => {
-      createUnityInstance(canvas, config, (progress) => {
-        document.getElementById("unity-progress-bar-full").style.width = 100 * progress + "%";
-      }).then((unityInstance) => {
-        document.getElementById("unity-loading-bar").style.display = "none";
-        document.getElementById("unity-fullscreen-button").onclick = () => {
-          unityInstance.SetFullscreen(1);
-        };
-      }).catch((message) => {
-        alert(message);
-      });
-    };
-    document.body.appendChild(script);
-  </script>
-</body>
+      document.body.appendChild(script);
+    </script>
+  </body>
 </html>
